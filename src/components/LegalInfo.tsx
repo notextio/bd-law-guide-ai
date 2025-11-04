@@ -1,7 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Scale, BookOpen, FileText, Building2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Scale, BookOpen, FileText, Building2, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const LegalInfo = () => {
+  const navigate = useNavigate();
+  
   const legalSections = [
     {
       icon: Scale,
@@ -131,7 +135,7 @@ export const LegalInfo = () => {
             <FileText className="w-5 h-5" />
             গুরুত্বপূর্ণ নোট (Important Notice)
           </h3>
-          <ul className="space-y-2 text-sm text-foreground/90">
+          <ul className="space-y-2 text-sm text-foreground/90 mb-6">
             <li className="flex gap-2">
               <span className="text-primary font-bold">•</span>
               <span>এই সিস্টেম বাংলাদেশ সংবিধান ও সকল প্রযোজ্য কর আইন মেনে চলে</span>
@@ -149,6 +153,18 @@ export const LegalInfo = () => {
               <span className="italic">All your data remains completely confidential and stored only within this system</span>
             </li>
           </ul>
+          
+          <div className="flex justify-center">
+            <Button 
+              onClick={() => navigate('/legal-info')}
+              variant="hero"
+              size="lg"
+              className="group"
+            >
+              আরও পড়ুন / Read More
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </div>
         </div>
       </div>
     </section>
