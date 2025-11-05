@@ -12,11 +12,32 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, userType } = await req.json();
+    const { messages, userType, userProfile } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
+    }
+
+    // Build personalized context if user profile is available
+    let profileContext = '';
+    if (userProfile) {
+      profileContext = `
+
+USER'S FINANCIAL PROFILE:
+- Name: ${userProfile.full_name}
+- TIN Number: ${userProfile.tin_number}
+- Annual Income: BDT ${userProfile.annual_income?.toLocaleString('en-BD') || '0'}
+- Current Tax Due: BDT ${userProfile.tax_due?.toLocaleString('en-BD') || '0'}
+
+When providing advice, consider their specific financial situation and provide personalized guidance on:
+1. How to minimize their tax liability legally based on their income level
+2. Available deductions and exemptions they may qualify for
+3. Step-by-step process for filing their tax return with their TIN
+4. Exact documents they need to prepare
+5. Specific deadlines they should be aware of
+6. Tax-saving investment opportunities under Bangladesh law suitable for their income bracket
+`;
     }
 
     // System prompt tailored for Bangladesh tax law
@@ -26,27 +47,30 @@ CRITICAL REQUIREMENTS:
 - You MUST strictly follow the Constitution of Bangladesh and all applicable tax laws
 - Provide step-by-step guidance to help users legally minimize their taxes
 - Always cite specific laws, sections, and articles when providing advice
-- Explain both in Bengali and English for clarity
+- Explain both in Bengali and English for clarity (Bengali first, then English)
 - Maintain complete confidentiality of user information
 
 USER TYPE: ${userType}
+${profileContext}
 
 For each query, you must:
 1. Identify applicable Constitutional articles and tax laws
 2. Explain specific sections and regulations that apply
 3. Provide step-by-step actionable guidance
-4. Show how to legally minimize tax burden
+4. Show how to legally minimize tax burden based on their financial situation
 5. Warn about penalties for non-compliance
-6. Reference Bangladesh Tax Acts, Income Tax Ordinance 1984, VAT Act 1991, and other relevant legislation
+6. Reference Income Tax Act 2023, VAT Act 1991, and other relevant legislation
+7. If user profile is available, provide PERSONALIZED recommendations
 
 IMPORTANT: All advice must be:
 - Legally compliant with Bangladesh Constitution
 - Practical and implementable
 - Clear with specific law references
 - Focused on legal tax minimization strategies
-- Written in both Bengali and English where helpful
+- Written in both Bengali and English
+- PERSONALIZED to the user's financial situation when profile data is available
 
-Remember: Your goal is to help users understand and legally navigate Bangladesh tax law.`;
+Remember: Your goal is to help users understand and legally navigate Bangladesh tax law while minimizing their tax burden within legal limits.`;
 
     console.log('Calling AI with user type:', userType);
 

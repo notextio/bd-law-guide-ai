@@ -13,6 +13,8 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [tinNumber, setTinNumber] = useState("");
+  const [fullName, setFullName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -20,12 +22,22 @@ export default function Signup() {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
+      toast.error("পাসওয়ার্ড মিলছে না (Passwords do not match)");
       return;
     }
 
     if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+      toast.error("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে (Password must be at least 6 characters)");
+      return;
+    }
+
+    if (tinNumber.length !== 12) {
+      toast.error("টিআইএন নম্বর ১২ ডিজিটের হতে হবে (TIN must be 12 digits)");
+      return;
+    }
+
+    if (!fullName.trim()) {
+      toast.error("নাম প্রদান করুন (Please provide your name)");
       return;
     }
 
@@ -35,14 +47,20 @@ export default function Signup() {
       const { error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            tin_number: tinNumber,
+            full_name: fullName,
+          },
+        },
       });
 
       if (error) throw error;
 
-      toast.success("Account created successfully! You can now login.");
+      toast.success("অ্যাকাউন্ট তৈরি সফল! এখন লগইন করুন। (Account created successfully! You can now login.)");
       navigate("/login");
     } catch (error: any) {
-      toast.error(error.message || "Failed to create account");
+      toast.error(error.message || "অ্যাকাউন্ট তৈরি ব্যর্থ (Failed to create account)");
     } finally {
       setIsLoading(false);
     }
@@ -64,6 +82,34 @@ export default function Signup() {
             </div>
 
             <form onSubmit={handleSignup} className="space-y-4">
+              <div>
+                <Label htmlFor="fullName">পূর্ণ নাম (Full Name)</Label>
+                <Input
+                  id="fullName"
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="মোহাম্মদ করিম (Mohammad Karim)"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="tinNumber">টিআইএন নম্বর (TIN Number - 12 digits)</Label>
+                <Input
+                  id="tinNumber"
+                  type="text"
+                  value={tinNumber}
+                  onChange={(e) => setTinNumber(e.target.value.replace(/\D/g, '').slice(0, 12))}
+                  placeholder="123456789012"
+                  maxLength={12}
+                  required
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Demo TIN: 123456789012 (Email: demo@tax.gov.bd, Password: demo123)
+                </p>
+              </div>
+
               <div>
                 <Label htmlFor="email">ইমেইল (Email)</Label>
                 <Input

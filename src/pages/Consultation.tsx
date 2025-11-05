@@ -1,16 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Send, Loader2, User, Bot } from "lucide-react";
+import { Send, Loader2, User, Bot, Wallet, TrendingDown, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
+}
+
+interface UserProfile {
+  tin_number: string;
+  full_name: string;
+  annual_income: number;
+  tax_due: number;
 }
 
 export default function Consultation() {
@@ -18,6 +26,44 @@ export default function Consultation() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [userType, setUserType] = useState<string | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    checkAuthAndLoadProfile();
+  }, []);
+
+  const checkAuthAndLoadProfile = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast.error("দয়া করে লগইন করুন (Please login first)");
+        navigate("/login");
+        return;
+      }
+
+      // Fetch user profile
+      const { data: profile, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching profile:", error);
+        toast.error("প্রোফাইল লোড করতে ব্যর্থ (Failed to load profile)");
+      } else {
+        setUserProfile(profile);
+      }
+    } catch (error) {
+      console.error("Auth error:", error);
+      navigate("/login");
+    } finally {
+      setIsLoadingProfile(false);
+    }
+  };
 
   const userTypes = [
     { id: "employer", label: "নিয়োগকর্তা (Employer)" },
@@ -41,7 +87,8 @@ export default function Consultation() {
       const { data, error } = await supabase.functions.invoke("tax-consultation", {
         body: { 
           messages: [...messages, userMessage],
-          userType 
+          userType,
+          userProfile 
         },
       });
 
@@ -60,6 +107,14 @@ export default function Consultation() {
     }
   };
 
+  if (isLoadingProfile) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -73,6 +128,39 @@ export default function Consultation() {
             </h1>
             <p className="text-muted-foreground">Tax Consultation Service</p>
           </div>
+
+          {/* User Financial Overview */}
+          {userProfile && (
+            <Card className="p-6 mb-6 shadow-elevated">
+              <h2 className="text-xl font-semibold mb-4 text-foreground">
+                আপনার আর্থিক সারসংক্ষেপ (Your Financial Overview)
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
+                  <FileText className="w-8 h-8 text-primary flex-shrink-0" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">নাম (Name)</p>
+                    <p className="text-lg font-semibold">{userProfile.full_name}</p>
+                    <p className="text-xs text-muted-foreground mt-1">TIN: {userProfile.tin_number}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
+                  <Wallet className="w-8 h-8 text-primary flex-shrink-0" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">বার্ষিক আয় (Annual Income)</p>
+                    <p className="text-lg font-semibold">৳{userProfile.annual_income.toLocaleString('en-BD')}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
+                  <TrendingDown className="w-8 h-8 text-destructive flex-shrink-0" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">প্রদেয় কর (Tax Due)</p>
+                    <p className="text-lg font-semibold text-destructive">৳{userProfile.tax_due.toLocaleString('en-BD')}</p>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          )}
 
           {/* User Type Selection */}
           {!userType && (
