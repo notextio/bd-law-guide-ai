@@ -1,9 +1,38 @@
 import { Button } from "@/components/ui/button";
-import { Link, useLocation } from "react-router-dom";
-import { FileText, Home, LogIn, MessageSquare, UserPlus } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { FileText, Home, LogIn, LogOut, MessageSquare, UserPlus } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const Navigation = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
+  useEffect(() => {
+    // Check initial auth state
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(!!session);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast.success("লগআউট সফল (Logged out successfully)");
+      navigate("/");
+    } catch (error) {
+      toast.error("লগআউট ব্যর্থ (Logout failed)");
+    }
+  };
   
   const isActive = (path: string) => location.pathname === path;
 
@@ -41,25 +70,39 @@ export const Navigation = () => {
                 <span className="hidden sm:inline">পরামর্শ</span>
               </Button>
             </Link>
-            <Link to="/login">
+            {!isAuthenticated ? (
+              <>
+                <Link to="/login">
+                  <Button 
+                    variant={isActive("/login") ? "secondary" : "ghost"} 
+                    size="sm"
+                    className="text-primary-foreground hover:text-primary-foreground"
+                  >
+                    <LogIn className="w-4 h-4 sm:mr-2" />
+                    <span className="hidden sm:inline">লগইন</span>
+                  </Button>
+                </Link>
+                <Link to="/signup">
+                  <Button 
+                    variant="official" 
+                    size="sm"
+                  >
+                    <UserPlus className="w-4 h-4 sm:mr-2" />
+                    <span className="hidden sm:inline">নিবন্ধন</span>
+                  </Button>
+                </Link>
+              </>
+            ) : (
               <Button 
-                variant={isActive("/login") ? "secondary" : "ghost"} 
+                variant="ghost" 
                 size="sm"
+                onClick={handleLogout}
                 className="text-primary-foreground hover:text-primary-foreground"
               >
-                <LogIn className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">লগইন</span>
+                <LogOut className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">লগআউট</span>
               </Button>
-            </Link>
-            <Link to="/signup">
-              <Button 
-                variant="official" 
-                size="sm"
-              >
-                <UserPlus className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">নিবন্ধন</span>
-              </Button>
-            </Link>
+            )}
           </div>
         </div>
       </div>
