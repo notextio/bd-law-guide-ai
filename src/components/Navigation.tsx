@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FileText, Home, LogIn, LogOut, MessageSquare, UserPlus } from "lucide-react";
+import { FileText, Home, LogIn, LogOut, MessageSquare, UserPlus, LayoutDashboard } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -60,6 +60,18 @@ export const Navigation = () => {
                 <span className="hidden sm:inline">হোম</span>
               </Button>
             </Link>
+            {isAuthenticated && (
+              <Link to="/dashboard">
+                <Button 
+                  variant={isActive("/dashboard") ? "secondary" : "ghost"} 
+                  size="sm"
+                  className="text-primary-foreground hover:text-primary-foreground"
+                >
+                  <LayoutDashboard className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">ড্যাশবোর্ড</span>
+                </Button>
+              </Link>
+            )}
             <Link to="/consultation">
               <Button 
                 variant={isActive("/consultation") ? "secondary" : "ghost"} 
