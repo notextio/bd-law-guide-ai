@@ -14,6 +14,78 @@ export type Database = {
   }
   public: {
     Tables: {
+      fraud_alerts: {
+        Row: {
+          alert_type: string
+          description: string
+          detected_at: string | null
+          id: string
+          resolved: boolean | null
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: string
+          user_id: string | null
+        }
+        Insert: {
+          alert_type: string
+          description: string
+          detected_at?: string | null
+          id?: string
+          resolved?: boolean | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity: string
+          user_id?: string | null
+        }
+        Update: {
+          alert_type?: string
+          description?: string
+          detected_at?: string | null
+          id?: string
+          resolved?: boolean | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      optimization_suggestions: {
+        Row: {
+          applicable_to_income_above: number | null
+          created_at: string | null
+          description: string
+          id: string
+          legal_reference: string
+          max_deduction: number | null
+          priority: number | null
+          suggestion_type: string
+          title: string
+        }
+        Insert: {
+          applicable_to_income_above?: number | null
+          created_at?: string | null
+          description: string
+          id?: string
+          legal_reference: string
+          max_deduction?: number | null
+          priority?: number | null
+          suggestion_type: string
+          title: string
+        }
+        Update: {
+          applicable_to_income_above?: number | null
+          created_at?: string | null
+          description?: string
+          id?: string
+          legal_reference?: string
+          max_deduction?: number | null
+          priority?: number | null
+          suggestion_type?: string
+          title?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           annual_income: number | null
@@ -47,15 +119,108 @@ export type Database = {
         }
         Relationships: []
       }
+      tax_brackets: {
+        Row: {
+          bracket_name: string
+          created_at: string | null
+          fiscal_year: string
+          fixed_amount: number | null
+          id: string
+          max_income: number | null
+          min_income: number
+          tax_rate: number
+        }
+        Insert: {
+          bracket_name: string
+          created_at?: string | null
+          fiscal_year?: string
+          fixed_amount?: number | null
+          id?: string
+          max_income?: number | null
+          min_income: number
+          tax_rate: number
+        }
+        Update: {
+          bracket_name?: string
+          created_at?: string | null
+          fiscal_year?: string
+          fixed_amount?: number | null
+          id?: string
+          max_income?: number | null
+          min_income?: number
+          tax_rate?: number
+        }
+        Relationships: []
+      }
+      tax_calculations: {
+        Row: {
+          calculated_at: string | null
+          deductions_applied: Json | null
+          fiscal_year: string
+          id: string
+          taxable_income: number
+          total_income: number
+          total_tax: number
+          user_id: string
+        }
+        Insert: {
+          calculated_at?: string | null
+          deductions_applied?: Json | null
+          fiscal_year: string
+          id?: string
+          taxable_income: number
+          total_income: number
+          total_tax: number
+          user_id: string
+        }
+        Update: {
+          calculated_at?: string | null
+          deductions_applied?: Json | null
+          fiscal_year?: string
+          id?: string
+          taxable_income?: number
+          total_income?: number
+          total_tax?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "citizen" | "tax_consultant" | "auditor" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -182,6 +347,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["citizen", "tax_consultant", "auditor", "admin"],
+    },
   },
 } as const
