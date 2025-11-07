@@ -43,8 +43,8 @@ All colors MUST be HSL.
     
     --gradient-primary: linear-gradient(135deg, hsl(155 85% 20%), hsl(155 70% 35%));
     --gradient-hero: linear-gradient(180deg, hsl(155 85% 20%), hsl(155 70% 25%));
-    --shadow-elevated: 0 10px 30px -10px hsl(155 85% 20% / 0.2);
-    --shadow-glow: 0 0 40px hsl(155 60% 45% / 0.15);
+    --shadow-elevated: 0 20px 50px -15px hsl(155 85% 20% / 0.3);
+    --shadow-glow: 0 0 60px hsl(45 100% 51% / 0.25);
 
     --sidebar-background: 0 0% 98%;
 

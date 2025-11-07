@@ -8,14 +8,12 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, Link } from "react-router-dom";
 import { LogIn } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { t } = useLanguage();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,10 +27,10 @@ export default function Login() {
 
       if (error) throw error;
 
-      toast.success(t('login.success'));
+      toast.success("Successfully logged in!");
       navigate("/dashboard");
     } catch (error: any) {
-      toast.error(error.message || t('login.error'));
+      toast.error(error.message || "Failed to login");
     } finally {
       setIsLoading(false);
     }
@@ -49,13 +47,13 @@ export default function Login() {
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <LogIn className="w-8 h-8 text-primary-foreground" />
               </div>
-              <h1 className="text-2xl font-bold text-foreground mb-2">{t('login.title')}</h1>
-              <p className="text-muted-foreground">{t('login.subtitle')}</p>
+              <h1 className="text-2xl font-bold text-foreground mb-2">Login</h1>
+              <p className="text-muted-foreground">Login to your account</p>
             </div>
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <Label htmlFor="email">{t('login.email')}</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -67,7 +65,7 @@ export default function Login() {
               </div>
 
               <div>
-                <Label htmlFor="password">{t('login.password')}</Label>
+                <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -84,15 +82,15 @@ export default function Login() {
                 className="w-full"
                 disabled={isLoading}
               >
-                {isLoading ? t('login.loading') : t('login.submit')}
+                {isLoading ? "Logging in..." : "Login"}
               </Button>
             </form>
 
             <div className="mt-6 text-center text-sm">
               <p className="text-muted-foreground">
-                {t('login.newUser')}{" "}
+                New user?{" "}
                 <Link to="/signup" className="text-primary hover:underline font-medium">
-                  {t('login.signupLink')}
+                  Sign up
                 </Link>
               </p>
             </div>

@@ -1,16 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FileText, Home, LogIn, LogOut, MessageSquare, UserPlus, LayoutDashboard, Languages } from "lucide-react";
+import { FileText, Home, LogIn, LogOut, MessageSquare, UserPlus, LayoutDashboard } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 export const Navigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const { language, toggleLanguage, t } = useLanguage();
   
   useEffect(() => {
     // Check initial auth state
@@ -29,10 +27,10 @@ export const Navigation = () => {
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
-      toast.success("লগআউট সফল (Logged out successfully)");
+      toast.success("Logged out successfully");
       navigate("/");
     } catch (error) {
-      toast.error("লগআউট ব্যর্থ (Logout failed)");
+      toast.error("Logout failed");
     }
   };
   
@@ -52,16 +50,6 @@ export const Navigation = () => {
 
           {/* Navigation Links */}
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleLanguage}
-              className="text-primary-foreground hover:text-primary-foreground"
-              title={language === 'en' ? 'Switch to Bangla' : 'Switch to English'}
-            >
-              <Languages className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">{language === 'en' ? 'বাংলা' : 'English'}</span>
-            </Button>
             <Link to="/">
               <Button 
                 variant={isActive("/") ? "secondary" : "ghost"} 
@@ -69,7 +57,7 @@ export const Navigation = () => {
                 className="text-primary-foreground hover:text-primary-foreground"
               >
                 <Home className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">{t('nav.home')}</span>
+                <span className="hidden sm:inline">Home</span>
               </Button>
             </Link>
             {isAuthenticated && (
@@ -80,7 +68,7 @@ export const Navigation = () => {
                   className="text-primary-foreground hover:text-primary-foreground"
                 >
                   <LayoutDashboard className="w-4 h-4 sm:mr-2" />
-                  <span className="hidden sm:inline">{t('nav.dashboard')}</span>
+                  <span className="hidden sm:inline">Dashboard</span>
                 </Button>
               </Link>
             )}
@@ -91,7 +79,7 @@ export const Navigation = () => {
                 className="text-primary-foreground hover:text-primary-foreground"
               >
                 <MessageSquare className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">{t('nav.consultation')}</span>
+                <span className="hidden sm:inline">Consultation</span>
               </Button>
             </Link>
             {!isAuthenticated ? (
@@ -103,7 +91,7 @@ export const Navigation = () => {
                     className="text-primary-foreground hover:text-primary-foreground"
                   >
                     <LogIn className="w-4 h-4 sm:mr-2" />
-                    <span className="hidden sm:inline">{t('nav.login')}</span>
+                    <span className="hidden sm:inline">Login</span>
                   </Button>
                 </Link>
                 <Link to="/signup">
@@ -112,7 +100,7 @@ export const Navigation = () => {
                     size="sm"
                   >
                     <UserPlus className="w-4 h-4 sm:mr-2" />
-                    <span className="hidden sm:inline">{t('nav.signup')}</span>
+                    <span className="hidden sm:inline">Sign Up</span>
                   </Button>
                 </Link>
               </>
@@ -124,7 +112,7 @@ export const Navigation = () => {
                 className="text-primary-foreground hover:text-primary-foreground"
               >
                 <LogOut className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">{t('nav.logout')}</span>
+                <span className="hidden sm:inline">Logout</span>
               </Button>
             )}
           </div>

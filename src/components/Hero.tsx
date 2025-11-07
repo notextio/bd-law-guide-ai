@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Shield, FileText, Users, Scale } from "lucide-react";
+import { Shield, Users, Scale } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroBg from "@/assets/hero-bg.jpg";
 
@@ -41,37 +41,31 @@ export const Hero = () => {
             Get AI-powered guidance following Bangladesh Constitution, laws, and orders to legally minimize taxes.
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+          {/* CTA Button */}
+          <div className="flex justify-center mb-16">
             <Link to="/consultation">
-              <Button variant="hero" size="lg" className="text-lg px-8 py-6">
+              <Button variant="hero" size="lg" className="text-lg px-10 py-7 shadow-glow hover:shadow-elevated transition-all">
                 পরামর্শ শুরু করুন (Start Consultation)
-              </Button>
-            </Link>
-            <Link to="/about">
-              <Button variant="official" size="lg" className="text-lg px-8 py-6">
-                <FileText className="mr-2" />
-                আইনি তথ্য (Legal Information)
               </Button>
             </Link>
           </div>
 
           {/* Feature Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
-            <div className="bg-card/90 backdrop-blur-sm p-6 rounded-lg border border-border shadow-elevated hover:shadow-glow transition-all">
-              <Users className="w-12 h-12 text-accent mx-auto mb-4" />
-              <h3 className="font-semibold text-lg mb-2 text-foreground">সকলের জন্য</h3>
-              <p className="text-muted-foreground text-sm">নিয়োগকর্তা, কর্মচারী, ব্যবসায়ী ও সরকারি কর্মকর্তা</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            <div className="group bg-card/95 backdrop-blur-sm p-8 rounded-xl border-2 border-border shadow-elevated hover:shadow-glow hover:border-accent/50 transition-all duration-300 hover:-translate-y-1">
+              <Users className="w-14 h-14 text-accent mx-auto mb-4 group-hover:scale-110 transition-transform" />
+              <h3 className="font-bold text-xl mb-3 text-foreground">সকলের জন্য</h3>
+              <p className="text-muted-foreground">নিয়োগকর্তা, কর্মচারী, ব্যবসায়ী ও সরকারি কর্মকর্তা</p>
             </div>
-            <div className="bg-card/90 backdrop-blur-sm p-6 rounded-lg border border-border shadow-elevated hover:shadow-glow transition-all">
-              <Scale className="w-12 h-12 text-accent mx-auto mb-4" />
-              <h3 className="font-semibold text-lg mb-2 text-foreground">আইন অনুযায়ী</h3>
-              <p className="text-muted-foreground text-sm">সংবিধান ও আইনের উপর ভিত্তি করে সম্পূর্ণ নির্দেশনা</p>
+            <div className="group bg-card/95 backdrop-blur-sm p-8 rounded-xl border-2 border-border shadow-elevated hover:shadow-glow hover:border-accent/50 transition-all duration-300 hover:-translate-y-1">
+              <Scale className="w-14 h-14 text-accent mx-auto mb-4 group-hover:scale-110 transition-transform" />
+              <h3 className="font-bold text-xl mb-3 text-foreground">আইন অনুযায়ী</h3>
+              <p className="text-muted-foreground">সংবিধান ও আইনের উপর ভিত্তি করে সম্পূর্ণ নির্দেশনা</p>
             </div>
-            <div className="bg-card/90 backdrop-blur-sm p-6 rounded-lg border border-border shadow-elevated hover:shadow-glow transition-all">
-              <Shield className="w-12 h-12 text-accent mx-auto mb-4" />
-              <h3 className="font-semibold text-lg mb-2 text-foreground">সম্পূর্ণ গোপনীয়</h3>
-              <p className="text-muted-foreground text-sm">আপনার তথ্য সুরক্ষিত ও গোপনীয় থাকবে</p>
+            <div className="group bg-card/95 backdrop-blur-sm p-8 rounded-xl border-2 border-border shadow-elevated hover:shadow-glow hover:border-accent/50 transition-all duration-300 hover:-translate-y-1">
+              <Shield className="w-14 h-14 text-accent mx-auto mb-4 group-hover:scale-110 transition-transform" />
+              <h3 className="font-bold text-xl mb-3 text-foreground">সম্পূর্ণ গোপনীয়</h3>
+              <p className="text-muted-foreground">আপনার তথ্য সুরক্ষিত ও গোপনীয় থাকবে</p>
             </div>
           </div>
         </div>
