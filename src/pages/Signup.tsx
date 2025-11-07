@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, Link } from "react-router-dom";
 import { UserPlus } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -18,32 +19,33 @@ export default function Signup() {
   const [annualIncome, setAnnualIncome] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      toast.error("পাসওয়ার্ড মিলছে না (Passwords do not match)");
+      toast.error(t('signup.passwordMismatch'));
       return;
     }
 
     if (password.length < 6) {
-      toast.error("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে (Password must be at least 6 characters)");
+      toast.error(t('signup.passwordLength'));
       return;
     }
 
     if (tinNumber.length !== 12) {
-      toast.error("টিআইএন নম্বর ১২ ডিজিটের হতে হবে (TIN must be 12 digits)");
+      toast.error(t('signup.tinLength'));
       return;
     }
 
     if (!fullName.trim()) {
-      toast.error("নাম প্রদান করুন (Please provide your name)");
+      toast.error(t('signup.provideName'));
       return;
     }
 
     if (!annualIncome || parseFloat(annualIncome) < 0) {
-      toast.error("বার্ষিক আয় প্রদান করুন (Please provide annual income)");
+      toast.error(t('signup.provideIncome'));
       return;
     }
 
@@ -81,10 +83,10 @@ export default function Signup() {
         }
       }
 
-      toast.success("অ্যাকাউন্ট তৈরি সফল! এখন লগইন করুন। (Account created successfully! You can now login.)");
+      toast.success(t('signup.success'));
       navigate("/login");
     } catch (error: any) {
-      toast.error(error.message || "অ্যাকাউন্ট তৈরি ব্যর্থ (Failed to create account)");
+      toast.error(error.message || t('signup.error'));
     } finally {
       setIsLoading(false);
     }
@@ -101,13 +103,13 @@ export default function Signup() {
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <UserPlus className="w-8 h-8 text-primary-foreground" />
               </div>
-              <h1 className="text-2xl font-bold text-foreground mb-2">নিবন্ধন করুন</h1>
-              <p className="text-muted-foreground">Create your account</p>
+              <h1 className="text-2xl font-bold text-foreground mb-2">{t('signup.title')}</h1>
+              <p className="text-muted-foreground">{t('signup.subtitle')}</p>
             </div>
 
             <form onSubmit={handleSignup} className="space-y-4">
               <div>
-                <Label htmlFor="fullName">পূর্ণ নাম (Full Name)</Label>
+                <Label htmlFor="fullName">{t('signup.fullName')}</Label>
                 <Input
                   id="fullName"
                   type="text"
@@ -119,7 +121,7 @@ export default function Signup() {
               </div>
 
               <div>
-                <Label htmlFor="tinNumber">টিআইএন নম্বর (TIN Number - 12 digits)</Label>
+                <Label htmlFor="tinNumber">{t('signup.tinNumber')}</Label>
                 <Input
                   id="tinNumber"
                   type="text"
@@ -132,7 +134,7 @@ export default function Signup() {
               </div>
 
               <div>
-                <Label htmlFor="annualIncome">বার্ষিক আয় (Annual Income in BDT)</Label>
+                <Label htmlFor="annualIncome">{t('signup.annualIncome')}</Label>
                 <Input
                   id="annualIncome"
                   type="number"
@@ -146,7 +148,7 @@ export default function Signup() {
               </div>
 
               <div>
-                <Label htmlFor="email">ইমেইল (Email)</Label>
+                <Label htmlFor="email">{t('signup.email')}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -158,7 +160,7 @@ export default function Signup() {
               </div>
 
               <div>
-                <Label htmlFor="password">পাসওয়ার্ড (Password)</Label>
+                <Label htmlFor="password">{t('signup.password')}</Label>
                 <Input
                   id="password"
                   type="password"
@@ -170,9 +172,7 @@ export default function Signup() {
               </div>
 
               <div>
-                <Label htmlFor="confirmPassword">
-                  পাসওয়ার্ড নিশ্চিত করুন (Confirm Password)
-                </Label>
+                <Label htmlFor="confirmPassword">{t('signup.confirmPassword')}</Label>
                 <Input
                   id="confirmPassword"
                   type="password"
@@ -189,15 +189,15 @@ export default function Signup() {
                 className="w-full"
                 disabled={isLoading}
               >
-                {isLoading ? "নিবন্ধন হচ্ছে..." : "নিবন্ধন করুন (Sign Up)"}
+                {isLoading ? t('signup.loading') : t('signup.submit')}
               </Button>
             </form>
 
             <div className="mt-6 text-center text-sm">
               <p className="text-muted-foreground">
-                ইতিমধ্যে একাউন্ট আছে? (Already have an account?){" "}
+                {t('signup.alreadyHaveAccount')}{" "}
                 <Link to="/login" className="text-primary hover:underline font-medium">
-                  লগইন করুন (Login)
+                  {t('signup.loginLink')}
                 </Link>
               </p>
             </div>
