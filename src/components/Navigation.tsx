@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FileText, Home, LogIn, LogOut, MessageSquare, UserPlus, LayoutDashboard } from "lucide-react";
+import { FileText, Home, LogIn, LogOut, MessageSquare, UserPlus, LayoutDashboard, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -58,6 +58,16 @@ export const Navigation = () => {
               >
                 <Home className="w-4 h-4 sm:mr-2" />
                 <span className="hidden sm:inline">Home</span>
+              </Button>
+            </Link>
+            <Link to="/features">
+              <Button 
+                variant={isActive("/features") ? "secondary" : "ghost"} 
+                size="sm"
+                className="text-primary-foreground hover:text-primary-foreground"
+              >
+                <Sparkles className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Features</span>
               </Button>
             </Link>
             {isAuthenticated && (

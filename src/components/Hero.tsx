@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Shield, Users, Scale } from "lucide-react";
+import { Shield, Users, Scale, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroBg from "@/assets/hero-bg.jpg";
 
@@ -41,11 +41,17 @@ export const Hero = () => {
             Get AI-powered guidance following Bangladesh Constitution, laws, and orders to legally minimize taxes.
           </p>
 
-          {/* CTA Button */}
-          <div className="flex justify-center mb-16">
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <Link to="/consultation">
               <Button variant="hero" size="lg" className="text-lg px-10 py-7 shadow-glow hover:shadow-elevated transition-all">
                 পরামর্শ শুরু করুন (Start Consultation)
+              </Button>
+            </Link>
+            <Link to="/features">
+              <Button variant="official" size="lg" className="text-lg px-10 py-7 shadow-elevated hover:shadow-glow transition-all">
+                <Sparkles className="mr-2 w-5 h-5" />
+                Innovation Features
               </Button>
             </Link>
           </div>

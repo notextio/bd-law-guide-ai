@@ -103,6 +103,11 @@ export default function Signup() {
               </div>
               <h1 className="text-2xl font-bold text-foreground mb-2">Sign Up</h1>
               <p className="text-muted-foreground">Create your account</p>
+              <div className="mt-4 p-3 bg-accent/20 rounded-lg border border-accent">
+                <p className="text-sm text-foreground">
+                  <strong>Demo Suggestion:</strong> Use email <code className="bg-background px-2 py-1 rounded">demo@tax.bd</code> with salary ৳1,200,000 to see all features
+                </p>
+              </div>
             </div>
 
             <form onSubmit={handleSignup} className="space-y-4">
