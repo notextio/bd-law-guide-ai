@@ -8,6 +8,7 @@ import { Send, Loader2, User, Bot, Wallet, TrendingDown, FileText } from "lucide
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { calculateTax } from "@/utils/taxCalculations";
 
 interface Message {
   role: "user" | "assistant";
@@ -56,6 +57,27 @@ export default function Consultation() {
         toast.error("প্রোফাইল লোড করতে ব্যর্থ (Failed to load profile)");
       } else {
         setUserProfile(profile);
+        
+        // Calculate and update tax_due
+        const { data: taxBrackets } = await supabase
+          .from("tax_brackets")
+          .select("*")
+          .eq("fiscal_year", "2024-2025")
+          .order("min_income");
+
+        if (taxBrackets && profile.annual_income > 0) {
+          const taxCalc = calculateTax(profile.annual_income, taxBrackets);
+          
+          // Update profile with calculated tax
+          const { error: updateError } = await supabase
+            .from("profiles")
+            .update({ tax_due: taxCalc.totalTax })
+            .eq("user_id", user.id);
+
+          if (!updateError) {
+            setUserProfile({ ...profile, tax_due: taxCalc.totalTax });
+          }
+        }
       }
     } catch (error) {
       console.error("Auth error:", error);

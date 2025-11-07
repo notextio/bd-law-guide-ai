@@ -28,7 +28,7 @@ export default function Login() {
       if (error) throw error;
 
       toast.success("Successfully logged in!");
-      navigate("/consultation");
+      navigate("/dashboard");
     } catch (error: any) {
       toast.error(error.message || "Failed to login");
     } finally {

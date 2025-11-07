@@ -15,6 +15,7 @@ export default function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [tinNumber, setTinNumber] = useState("");
   const [fullName, setFullName] = useState("");
+  const [annualIncome, setAnnualIncome] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -41,6 +42,11 @@ export default function Signup() {
       return;
     }
 
+    if (!annualIncome || parseFloat(annualIncome) < 0) {
+      toast.error("বার্ষিক আয় প্রদান করুন (Please provide annual income)");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -48,6 +54,7 @@ export default function Signup() {
         email,
         password,
         options: {
+          emailRedirectTo: `${window.location.origin}/`,
           data: {
             tin_number: tinNumber,
             full_name: fullName,
@@ -56,6 +63,23 @@ export default function Signup() {
       });
 
       if (error) throw error;
+
+      // Wait a moment for the trigger to create the profile
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Get the session to update annual income
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (!sessionError && session?.user) {
+        const { error: updateError } = await supabase
+          .from("profiles")
+          .update({ annual_income: parseFloat(annualIncome) })
+          .eq("user_id", session.user.id);
+
+        if (updateError) {
+          console.error("Error updating annual income:", updateError);
+        }
+      }
 
       toast.success("অ্যাকাউন্ট তৈরি সফল! এখন লগইন করুন। (Account created successfully! You can now login.)");
       navigate("/login");
@@ -105,9 +129,20 @@ export default function Signup() {
                   maxLength={12}
                   required
                 />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Demo TIN: 123456789012 (Email: demo@tax.gov.bd, Password: demo123)
-                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="annualIncome">বার্ষিক আয় (Annual Income in BDT)</Label>
+                <Input
+                  id="annualIncome"
+                  type="number"
+                  value={annualIncome}
+                  onChange={(e) => setAnnualIncome(e.target.value)}
+                  placeholder="500000"
+                  min="0"
+                  step="1000"
+                  required
+                />
               </div>
 
               <div>

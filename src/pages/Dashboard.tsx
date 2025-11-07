@@ -76,8 +76,8 @@ const Dashboard = () => {
 
       setUserProfile(profile);
 
-      // Load tax brackets
-      const { data: brackets, error: bracketsError } = await supabase
+      // Load tax brackets first
+      const { data: taxBracketsData, error: bracketsError } = await supabase
         .from("tax_brackets")
         .select("*")
         .eq("fiscal_year", "2024-2025")
@@ -86,7 +86,22 @@ const Dashboard = () => {
       if (bracketsError) {
         console.error("Tax brackets error:", bracketsError);
       } else {
-        setTaxBrackets(brackets || []);
+        setTaxBrackets(taxBracketsData || []);
+        
+        // Calculate and update tax_due
+        if (taxBracketsData && profile.annual_income > 0) {
+          const taxCalc = calculateTax(profile.annual_income, taxBracketsData);
+          
+          // Update profile with calculated tax
+          const { error: updateError } = await supabase
+            .from("profiles")
+            .update({ tax_due: taxCalc.totalTax })
+            .eq("user_id", session.user.id);
+
+          if (!updateError) {
+            setUserProfile({ ...profile, tax_due: taxCalc.totalTax });
+          }
+        }
       }
 
       // Load optimization suggestions
