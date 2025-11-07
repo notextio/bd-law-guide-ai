@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Send, Loader2, User, Bot, Wallet, TrendingDown, FileText } from "lucide-react";
+import { Send, Loader2, User, Bot, Wallet, TrendingDown, FileText, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -293,19 +293,35 @@ export default function Consultation() {
                     }
                   }}
                 />
-                <Button
-                  onClick={handleSend}
-                  disabled={isLoading || !input.trim()}
-                  variant="hero"
-                  size="lg"
-                  className="h-auto"
-                >
-                  {isLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <Send className="w-5 h-5" />
-                  )}
-                </Button>
+                <div className="flex flex-col gap-2">
+                  <Button
+                    onClick={() => {
+                      setMessages([]);
+                      setInput("");
+                      toast.success("চ্যাট পরিষ্কার করা হয়েছে (Chat cleared)");
+                    }}
+                    disabled={messages.length === 0}
+                    variant="outline"
+                    size="lg"
+                    className="h-auto"
+                    title="Clear chat"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </Button>
+                  <Button
+                    onClick={handleSend}
+                    disabled={isLoading || !input.trim()}
+                    variant="hero"
+                    size="lg"
+                    className="h-auto"
+                  >
+                    {isLoading ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <Send className="w-5 h-5" />
+                    )}
+                  </Button>
+                </div>
               </div>
             </>
           )}
