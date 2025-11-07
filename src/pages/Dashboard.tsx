@@ -160,7 +160,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
       <Navigation />
       
-      <div className="container mx-auto px-4 pt-24 pb-8">
+      <main className="container mx-auto px-4 pt-28 pb-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">
@@ -294,7 +294,7 @@ const Dashboard = () => {
             <FraudAlerts alerts={alerts} />
           </TabsContent>
         </Tabs>
-      </div>
+      </main>
     </div>
   );
 };
